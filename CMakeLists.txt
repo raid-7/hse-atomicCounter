@@ -9,7 +9,7 @@ enable_testing()
 find_package(Threads REQUIRED)
 
 if (CPP)
-
+    add_subdirectory(cpp_impl)
 else()
     add_executable(test_counter test.c)
     target_link_libraries(test_counter Threads::Threads)
