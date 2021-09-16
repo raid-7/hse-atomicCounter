@@ -15,6 +15,27 @@ C++ version is fancier but incompatible with GenMC.
 
 C++ tests contain concurrent stress tests. C tests are adopted to model checking.
 
+## Build and run
+
+Assuming `make` and `ctest` backends:
+
+```sh
+# build C tests
+mkdir build
+cd build
+cmake ..
+make
+
+# build C++ tests
+mkdir build
+cd build
+cmake -DCPP=ON ..
+make
+
+# run tests
+ctest --verbose
+```
+
 # Task 2
 
 ```sh
