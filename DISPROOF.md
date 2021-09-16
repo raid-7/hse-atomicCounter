@@ -27,7 +27,9 @@ get_3\ reads\ a_2 \rightarrow 1 \\
 \mathbf{end.get_3 : 1} \\
 \mathbf{end.get_4 : 2}$$
 
-This history consists of four concurrent operations: $$inc_1(1), inc_2(2), get_3 : 1, get_4 : 2$$. Imagine these $$inc$$ operations being performed sequentially. Then expected values of the counter would be either $$0 \rightarrow 1 \rightarrow 3$$, or $$0 \rightarrow 2 \rightarrow 3$$. So the history in which $$get​$$s yield 1 and 2 cannot be linearized.
+This history consists of four concurrent operations: $$inc_1(1), inc_2(2), get_3 : 1, get_4 : 2$$. Imagine these $$inc$$ operations being performed sequentially. Then expected values of the counter would be either $$0 \rightarrow 1 \rightarrow 3$$, or $$0 \rightarrow 2 \rightarrow 3$$. So the history in which $$get$$s yield 1 and 2 cannot be linearized.
+
+![History](https://github.com/raid-7/hse-atomicCounter/blob/master/img/disproof.png?raw=true)
 
 Moreover, this history is not sequentially consistent.
 
@@ -41,11 +43,10 @@ Let $$I$$ be a set of all $$inc$$ operations. For operation $$get_i : result$$ l
 
 For a set $$U \subset I$$ let $$sum(U) = \Sigma_{inc_i : delta_i \in U} delta_i$$. For example, $$sum(L_i)$$ is the sum of all increments completed before the start of $$get_i$$.
 
-**Statement.** For any concurrent history $$H​$$ and a $$get_i : res_i​$$ operation in it $$sum(L_i) \leq res_i \leq sum(L_i) + sum(C_i)​$$.
+**Statement.** For any concurrent history $$H$$ and a $$get_i : res_i$$ operation in it $$sum(L_i) \leq res_i \leq sum(L_i) + sum(C_i)$$.
 
-**Proof.** We rephrase lemma 1.1 and lemma 1.2 from PROOF.md.
+**Proof.** We rephrase lemma 1.1 and lemma 1.2 from [PROOF.md](https://github.com/raid-7/hse-atomicCounter/blob/master/PROOF.md).
 
-**Lemma 1.1.** For any operation $$get_i : result​$$ $$result \geq sum(L_i)​$$. **Proof.** Fetch-and-adds performed by operations in $$L_i​$$ happens-before reads performed by $$get_i​$$. As registers are never decremented, the reads return at least those values which are written by the last FAA to the corresponding register performed by an operation from $$L_i​$$. Sum of these values is equal to $$sum(L_i)​$$.
+**Lemma 1.1.** For any operation $$get_i : result$$ $$result \geq sum(L_i)​$$. **Proof.** Fetch-and-adds performed by operations in $$L_i$$ happens-before reads performed by $$get_i$$. As registers are never decremented, the reads return at least those values which are written by the last FAA to the corresponding register performed by an operation from $$L_i$$. Sum of these values is equal to $$sum(L_i)$$.
 
 **Lemma 1.2.** For any operation $$get_i : result$$ $$result \leq sum(I)-sum(J_i) = sum(L_i) + sum(C_i)$$. **Proof.** Reads performed by $$get_i$$ happens-before fetch-and-adds performed by operations in $$J_i$$. As registers are never decremented, the reads return at most those values which are read by the first FAA to the corresponding register performed by an operation from $$J_i$$. Sum of these values is equal to $$sum(I \setminus J_i)$$.
-

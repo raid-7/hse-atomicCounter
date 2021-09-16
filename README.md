@@ -25,8 +25,8 @@ Model checking takes some time.
 
 # Task 3
 
-See PROOF.md.
+See [PROOF.md](https://github.com/raid-7/hse-atomicCounter/blob/master/PROOF.md).
 
-#Task 4
+# Task 4
 
-See DISPROOF.md.
+See [DISPROOF.md](https://github.com/raid-7/hse-atomicCounter/blob/master/DISPROOF.md).
