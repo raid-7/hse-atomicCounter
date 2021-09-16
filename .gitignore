@@ -5,6 +5,6 @@
 *.iml
 
 # error graphs
-/*.dot
-/*.png
-/*.pdf
+/err*.dot
+/err*.png
+/err*.pdf
