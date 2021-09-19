@@ -10,7 +10,7 @@ We consider a contention-aware counter consisting of $K$ registers $\{ a_i \}_{i
       inc_i
  \end{cases}$.
 
-Let $<_H$ be a an order induced by the history $H$ on operations:
+Let $<_H$ be an order induced by the history $H$ on operations:
 
 $op_1 <_H op_2$ iff $end.op_1$ precedes $start.op_2$ in $H$.
 
@@ -18,9 +18,9 @@ For sequential histories we will consider notions $\{ op_1, op_2, ... op_n \}$ a
 
 Let $I$ be a set of all $inc$ operations. For operation $get_i : result$ let $L_i = \{ inc_j \in I | inc_j <_H get_i \}$, $J_i = \{ inc_j \in I | get_i <_H inc_j \}$, $C_i = \{ inc_j \in I | get_i ||_H inc_j \} = I \setminus (L_i \cup J_i)$.
 
-**Lemma 1.1.** For any operation $get_i : result$ $result \geq |L_i|$. **Proof.** Fetch-and-adds performed by operations in $L_i$ happens-before reads performed by $get_i$. As registers are never decremented, the reads return at least those values which are written by the last FAA to the corresponding register performed by an operation from $L_i$. Sum of these values is equal to the size of $L_i$.
+**Lemma 1.1.** For any operation $get_i : result$ $result \geq |L_i|$. **Proof.** Fetch-and-adds performed by operations in $L_i$ happens-before reads performed by $get_i$. Because registers are never decremented, the reads return at least those values which are written by the last FAA to the corresponding register performed by an operation from $L_i$. Sum of these values is equal to the size of $L_i$.
 
-**Lemma 1.2.** For any operation $get_i : result$ $result \leq |I|-|J_i| = |L_i| + |C_i|$, i.e. $result$ does not exceed the number of $inc$s which completed before $get_i$ or concurrent with it. **Proof.** Reads performed by $get_i$ happens-before fetch-and-adds performed by operations in $J_i$. As registers are never decremented, the reads return at most those values which are read by the first FAA to the corresponding register performed by an operation from $J_i$. Sum of these values is equal to the size of $I \setminus J_i$.
+**Lemma 1.2.** For any operation $get_i : result$ $result \leq |I|-|J_i| = |L_i| + |C_i|$, i.e. $result$ does not exceed the number of $inc$s which completed before $get_i$ or concurrent with it. **Proof.** Reads performed by $get_i$ happens-before fetch-and-adds performed by operations in $J_i$. Because registers are never decremented, the reads return at most those values which are read by the first FAA from the corresponding register performed by an operation from $J_i$. Sum of these values is equal to the size of $I \setminus J_i$.
 
 Denote the number of $inc$ operations in a set or sequence $Q$ $incs(Q)$.
 
@@ -46,7 +46,7 @@ linearize(H):
             if op_j = get_j : res_j and res_j = incs(H'):
               remove get_j from S
               append get_j to H'
-          find inc_j in S // block 2.2
+          find inc_j in S with the least end.inc_j // block 2.2
           remove inc_j from S
           append inc_j to H' // point a
       remove op_i from S
@@ -59,22 +59,24 @@ $linearize$ analyzes events from $H$ in order and maintains a set of started but
 We now consider which operations from $S$ are appended before the operation $op$.
 
 * *(block 1)* If $op$ is an $inc$ operation, then all $get : result$ with $result = incs(H')$ must be appended to $H'$ before this $inc$ operation. So we take such $get$s from S and append them to $H'$.
-* *(block 2)* If $op$ is a $get : result$ operation, then exactly $result$ $inc$ operations must appear before $op$ in $H'$. So we take $inc$s from $S$ and append them to $H'$ until $incs(H') = result$ *(block 2.2)*. Also, before that we take $etg$s with $result = incs(H')$ from S and append them to $H'$ *(block 2.1)*.
+* *(block 2)* If $op$ is a $get : result$ operation, then exactly $result$ $inc$ operations must appear before $op$ in $H'$. So we take $inc$s from $S$ in order of appearance of their $end$ in $H$ and append them to $H'$ until $incs(H') = result$ *(block 2.2)*. Also, before that we take $get$s with $result = incs(H')$ from S and append them to $H'$ *(block 2.1)*.
 
 **Lemma 2.** When an operation $get_i : res_i$ is added to $S$, $res_i \geq incs(H')$.
 
 **Proof.** The operation is added to $S$ when its start is encountered in $H$. To this moment all operations from $L_i$ are appended to $H'$ and none of operations from $J_i$ are encountered and none of them are appended to $H'$.
 
-Imagine that $incs(H') \gt res_i$. Consider an operation $inc_j$ such that $incs(H')$ was equal to $res_i$ before $inc_j$ was appended to $H'$. By lemma 1.1 $inc_j \in C_i$, i.e. it is concurrent with $get_i$. Then $end.inc_j$ is not yet encountered in $H$. Consequently, $inc_j$ could be appended to $H'$ only at *point a*. This means that an event $end.get_k : res_k$ appeared in $H$ before $start.get_i : res_i$ for some operation $get_k$ with $res_k > res_i$.
+Imagine that $incs(H') \gt res_i$. Consider an operation $inc_j$ such that $incs(H')$ was equal to $res_i$ before $inc_j$ was appended to $H'$. So by appending $inc_j$ we lost a chance to correctly linearize $get_i$. There are two possible cases.
 
-So there are two get operations $get_i : res_i$ and $get_k : res_k$, such that
+* $inc_j \in L_i$
+  By lemma 1.1 there is $inc_k \in C_i$ that was appended to $H'$ before $inc_j$. Because $inc_j <_H get_i$ and $inc_k ||_H get_i$, $end.inc_j$ precedes $end.inc_k$ in $H$ and $inc_j ||_H inc_k$. So $inc_j$ was in $S$ when $inc_k$ was appended to $H'$. Because $start.get_i$ was not encountered at that moment, $end.inc_k$ was not encountered too. Thus, $inc_k$ was appended to $H'$ at *point a* of the procedure. Because $inc_j \in S$,  $inc_k \in S$ and $end.inc_j$ precedes $end.inc_k$ in $H$, $inc_j$ must have been taken from $S$ instead of $inc_k$.
+* $inc_j \in C_i$
+  $inc_j$ is concurrent with $get_i$, so $end.inc_j$ is not yet encountered in $H$. Consequently, $inc_j$ could be appended to $H'$ only at *point a*. This means that an event $end.get_k : res_k$ appeared in $H$ before $start.get_i : res_i$ for some operation $get_k$ with $res_k > res_i$. So there are two get operations $get_i : res_i$ and $get_k : res_k$, such that
+  * $get_k <_H get_i$,
+  * $res_k > res_i$.
 
-* $get_k <_H get_i$,
-* $res_k > res_i$.
+  All reads in $get_k$ happens-before reads in $get_i$ and values of the registers are never decremented. Consequently, all reads performed by $get_i$ yield values greater than or equal to ones returned by reads in $get_k$, and $res_i \geq res_k$.
 
-All reads in $get_k$ happens-before reads in $get_i$ and values of the registers are never decremented. Consequently, all reads performed by $get_i$ yield values greater than or equal to ones returned by reads in $get_k$, and $res_i \geq res_k$.
-
-We came to a contradiction. Thus, $incs(H') \leq res_i$.
+We came to a contradiction in both cases. Thus, $incs(H') \leq res_i$.
 
 **Lemma 3.** Before execution of *block 2* $incs(H') \leq res_i$ and $incs(H') + incs(S) \geq res_i$.
 
