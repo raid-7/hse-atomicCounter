@@ -21,5 +21,5 @@ uint32_t next_random(uint32_t bound) {
     // we cannot reuse distribution because it is not thread-safe
     // we cannot store thread-local distribution because bounds may change
 
-    return std::uniform_int_distribution<>(0, bound)(get_tl_random());
+    return std::uniform_int_distribution<>(0, bound - 1)(get_tl_random());
 }

@@ -14,6 +14,6 @@ else()
     add_executable(test_counter test.c)
     target_link_libraries(test_counter Threads::Threads)
     target_compile_options(test_counter PRIVATE "-Wall" "-Wextra")
-endif()
 
-add_test(test test_counter)
+    add_test(test test_counter)
+endif()
