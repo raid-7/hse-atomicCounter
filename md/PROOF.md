@@ -68,8 +68,10 @@ We now consider which operations from $S$ are appended before the operation $op$
 Imagine that $incs(H') \gt res_i$. Consider an operation $inc_j$ such that $incs(H')$ was equal to $res_i$ before $inc_j$ was appended to $H'$. So by appending $inc_j$ we lost a chance to correctly linearize $get_i$. There are two possible cases.
 
 * $inc_j \in L_i$
-  By lemma 1.1 there is $inc_k \in C_i$ that was appended to $H'$ before $inc_j$. Because $inc_j <_H get_i$ and $inc_k ||_H get_i$, $end.inc_j$ precedes $end.inc_k$ in $H$ and $inc_j ||_H inc_k$. So $inc_j$ was in $S$ when $inc_k$ was appended to $H'$. Because $start.get_i$ was not encountered at that moment, $end.inc_k$ was not encountered too. Thus, $inc_k$ was appended to $H'$ at *point a* of the procedure. Because $inc_j \in S$,  $inc_k \in S$ and $end.inc_j$ precedes $end.inc_k$ in $H$, $inc_j$ must have been taken from $S$ instead of $inc_k$.
+
+  By lemma 1.1 there is $inc_k \in C_i$ that was appended to $H'$ before $inc_j$. Because $inc_j <_H get_i$ and $inc_k ||_H get_i$, $end.inc_j$ precedes $end.inc_k$ in $H$ and $inc_j ||_H inc_k$. So $inc_j$ was in $S$ when $inc_k$ was appended to $H'$. Because $start.get_i$ was not encountered at that moment, $end.inc_k$ was not encountered too. Thus, $inc_k$ was appended to $H'$ at *point a* of the procedure. Because $inc_j \in S$,  $inc_k \in S$ and $end.inc_j$ precedes $end.inc_k$ in $H$, $inc_j$ must have been taken from $S$ instead of $inc_k$ by *block 2.2*.
 * $inc_j \in C_i$
+
   $inc_j$ is concurrent with $get_i$, so $end.inc_j$ is not yet encountered in $H$. Consequently, $inc_j$ could be appended to $H'$ only at *point a*. This means that an event $end.get_k : res_k$ appeared in $H$ before $start.get_i : res_i$ for some operation $get_k$ with $res_k > res_i$. So there are two get operations $get_i : res_i$ and $get_k : res_k$, such that
   * $get_k <_H get_i$,
   * $res_k > res_i$.
