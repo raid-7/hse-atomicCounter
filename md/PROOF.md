@@ -14,7 +14,7 @@ Let $<_H$ be an order induced by the history $H$ on operations:
 
 $op_1 <_H op_2$ iff $end.op_1$ precedes $start.op_2$ in $H$.
 
-For sequential histories we will consider notions $\{ op_1, op_2, ... op_n \}$ and $\{ start.op_1, end.op_1, start.op_2, end.op_2, ... start.op_n, end.op_n \}$ to be equivalent.
+For sequential histories we consider notations $\{ op_1, op_2, ... op_n \}$ and $\{ start.op_1, end.op_1, start.op_2, end.op_2, ... start.op_n, end.op_n \}$ to be equivalent.
 
 Let $I$ be a set of all $inc$ operations. For operation $get_i : result$ let $L_i = \{ inc_j \in I | inc_j <_H get_i \}$, $J_i = \{ inc_j \in I | get_i <_H inc_j \}$, $C_i = \{ inc_j \in I | get_i ||_H inc_j \} = I \setminus (L_i \cup J_i)$.
 

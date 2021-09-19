@@ -1,6 +1,6 @@
 We consider a contention-aware counter consisting of $K$ registers $\{ a_i \}_{i=1}^{i=K}$. $inc(delta)$ operation choses a random register and atomically increments it by a non-negative $delta$. $get$ operation summarizes values of the registers in order from $a_1$ to $a_K$.
 
-We use the following notion for histories: $H = \{ ev_i \}$, $ev_i = \begin{cases} 
+We use the following notation for histories: $H = \{ ev_i \}$, $ev_i = \begin{cases} 
       start.op_i \\
       end.op_i
  \end{cases}$, $op_i = \begin{cases} 
@@ -49,5 +49,5 @@ For a set $U \subset I$ let $sum(U) = \Sigma_{inc_i : delta_i \in U} delta_i$. F
 
 **Lemma 1.1.** For any operation $get_i : result$ $result \geq sum(L_i)$. **Proof.** Fetch-and-adds performed by operations in $L_i$ happens-before reads performed by $get_i$. As registers are never decremented, the reads return at least those values which are written by the last FAA to the corresponding register performed by an operation from $L_i$. Sum of these values is equal to $sum(L_i)$.
 
-**Lemma 1.2.** For any operation $get_i : result$ $result \leq sum(I)-sum(J_i) = sum(L_i) + sum(C_i)$. **Proof.** Reads performed by $get_i$ happens-before fetch-and-adds performed by operations in $J_i$. As registers are never decremented, the reads return at most those values which are read by the first FAA to the corresponding register performed by an operation from $J_i$. Sum of these values is equal to $sum(I \setminus J_i)$.
+**Lemma 1.2.** For any operation $get_i : result$ $result \leq sum(I)-sum(J_i) = sum(L_i) + sum(C_i)$. **Proof.** Reads performed by $get_i$ happens-before fetch-and-adds performed by operations in $J_i$. As registers are never decremented, the reads return at most those values which are read by the first FAA from the corresponding register performed by an operation from $J_i$. Sum of these values is equal to $sum(I \setminus J_i)$.
 
