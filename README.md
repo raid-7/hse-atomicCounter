@@ -5,12 +5,12 @@ This is a test task for a research project in HSE.
 
 # Task 1
 
-* C implementation: counter.hpp
+* C implementation: counter.h
 * C++ implementation: cpp_impl/counter.cpp
 
 C++ version is fancier but incompatible with GenMC.
 
-* C version tests: test.cpp
+* C version tests: test.c
 * C++ version tesets: cpp_impl/test.cpp
 
 C++ tests contain concurrent stress tests. C tests are adopted to model checking.
