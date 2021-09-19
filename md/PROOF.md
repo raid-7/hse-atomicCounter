@@ -1,6 +1,6 @@
 We consider a contention-aware counter consisting of $K$ registers $\{ a_i \}_{i=1}^{i=K}$. $inc$ operation choses a random register and atomically increments it by 1. $get$ operation summarizes values of the registers in order from $a_1$ to $a_K$.
 
-**Statement.** The given counter is linearizable.
+**The given counter is linearizable.**
 
 **Proof.** Consider a concurrent history $H = \{ ev_i \}$, $ev_i = \begin{cases} 
       start.op_i \\
@@ -65,7 +65,7 @@ We now consider which operations from $S$ are appended before the operation $op$
 
 **Proof.** The operation is added to $S$ when its start is encountered in $H$. To this moment all operations from $L_i$ are appended to $H'$ and none of operations from $J_i$ are encountered and none of them are appended to $H'$.
 
-Imagine that $incs(H') \gt res_i$. Consider an operation $inc_j$ such that $incs(H')$ was equal to $res_i$ before $inc_j$ was appended to $H'$. According to lemma 1.1 $inc_j \in C_i$, i.e. it is concurrent with $get_i$. Then $end.inc_j$ is not yet encountered in $H$. Consequently, $inc_j$ could be appended to $H'$ only at *point a*. This means that an event $end.get_k : res_k$ appeared in $H$ before $start.get_i : res_i$ for some operation $get_k$ with $res_k > res_i$.
+Imagine that $incs(H') \gt res_i$. Consider an operation $inc_j$ such that $incs(H')$ was equal to $res_i$ before $inc_j$ was appended to $H'$. By lemma 1.1 $inc_j \in C_i$, i.e. it is concurrent with $get_i$. Then $end.inc_j$ is not yet encountered in $H$. Consequently, $inc_j$ could be appended to $H'$ only at *point a*. This means that an event $end.get_k : res_k$ appeared in $H$ before $start.get_i : res_i$ for some operation $get_k$ with $res_k > res_i$.
 
 So there are two get operations $get_i : res_i$ and $get_k : res_k$, such that
 
@@ -82,10 +82,10 @@ We came to a contradiction. Thus, $incs(H') \leq res_i$.
 
 **Corollary 1.** After execution of *block 2* $incs(H') = res_i$.
 
-**Corollary 2.** $linearize(H)$ is a legal sequential history. According to lemma 2 and corollary 1 all $get$s are appended to $H'$ when number of $inc$ operations in $H'$ is equal to the result of the $get$ operation.
+**Corollary 2.** $linearize(H)$ is a legal sequential history. By lemma 2 and corollary 1 all $get$s are appended to $H'$ when number of $inc$ operations in $H'$ is equal to the result of the $get$ operation.
 
 **Lemma 4.** $linearize(H)$ is equivalent to $H$.
 
 **Proof.** To prove equivalence of $H$ and $H'$ we have to prove, that total order $<_{H'}$ extends $<_H$. Consider two operations $op_a$ and $op_b$, $op_a <_{H} op_b$. This means that $linearize$ encounters $end.op_a$ before $start.op_b$ and appends $op_a$ to $H'$ before it appends $op_b$ to $S$. Consequently, $op_a <_{H'} op_b$.
 
-**Conclusion.** According to corollary 2 and lemma 4 $linearize(H)$ is a linearization of $H$.
+**Conclusion.** By corollary 2 and lemma 4 $linearize(H)$ is a linearization of $H$.

@@ -8,7 +8,7 @@ We use the following notion for histories: $H = \{ ev_i \}$, $ev_i = \begin{case
       inc_i(delta)
  \end{cases}$.
 
-**Statement.** The counter is not linearizable.
+**The counter is not linearizable.**
 
 **Proof.** Consider an example with $K = 2$ and the following concurrent history. Lines written with regular text are atomic steps made by the operations, they are not part of the history.
 
@@ -31,7 +31,7 @@ This history consists of four concurrent operations: $inc_1(1), inc_2(2), get_3 
 
 ![History](https://github.com/raid-7/hse-atomicCounter/blob/master/img/disproof.png?raw=true)
 
-Moreover, this history is not sequentially consistent.
+Moreover, this history is neither sequentially consistent, nor quiescent consistent.
 
 ----------------------------------------------------------------
 
@@ -43,10 +43,11 @@ Let $I$ be a set of all $inc$ operations. For operation $get_i : result$ let $L_
 
 For a set $U \subset I$ let $sum(U) = \Sigma_{inc_i : delta_i \in U} delta_i$. For example, $sum(L_i)$ is the sum of all increments completed before the start of $get_i$.
 
-**Statement.** For any concurrent history $H$ and a $get_i : res_i$ operation in it $sum(L_i) \leq res_i \leq sum(L_i) + sum(C_i)$.
+**For any concurrent history $H$ and a $get_i : res_i$ operation in it $sum(L_i) \leq res_i \leq sum(L_i) + sum(C_i)$.**
 
 **Proof.** We rephrase lemma 1.1 and lemma 1.2 from [PROOF.pdf](https://github.com/raid-7/hse-atomicCounter/blob/master/PROOF.pdf).
 
 **Lemma 1.1.** For any operation $get_i : result$ $result \geq sum(L_i)$. **Proof.** Fetch-and-adds performed by operations in $L_i$ happens-before reads performed by $get_i$. As registers are never decremented, the reads return at least those values which are written by the last FAA to the corresponding register performed by an operation from $L_i$. Sum of these values is equal to $sum(L_i)$.
 
 **Lemma 1.2.** For any operation $get_i : result$ $result \leq sum(I)-sum(J_i) = sum(L_i) + sum(C_i)$. **Proof.** Reads performed by $get_i$ happens-before fetch-and-adds performed by operations in $J_i$. As registers are never decremented, the reads return at most those values which are read by the first FAA to the corresponding register performed by an operation from $J_i$. Sum of these values is equal to $sum(I \setminus J_i)$.
+
